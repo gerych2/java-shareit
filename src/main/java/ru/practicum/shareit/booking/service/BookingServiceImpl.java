@@ -33,11 +33,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto createBooking(BookingCreateDto bookingCreateDto, Long bookerId) {
-        User booker = userRepository.findById(bookerId)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + bookerId + " не найден"));
-
-        Item item = itemRepository.findById(bookingCreateDto.getItemId())
-                .orElseThrow(() -> new NoSuchElementException("Вещь с ID " + bookingCreateDto.getItemId() + " не найдена"));
+        User booker = getUserById(bookerId);
+        Item item = getItemById(bookingCreateDto.getItemId());
 
         if (item.getOwnerId().equals(bookerId)) {
             throw new NoSuchElementException("Владелец не может бронировать свою вещь");
@@ -63,8 +60,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto approveBooking(Long bookingId, Boolean approved, Long ownerId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + bookingId + " не найдено"));
+        Booking booking = getBookingById(bookingId);
 
         if (!booking.getItem().getOwnerId().equals(ownerId)) {
             throw new ForbiddenException("Только владелец может подтверждать бронирование");
@@ -86,8 +82,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getBookingById(Long bookingId, Long userId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + bookingId + " не найдено"));
+        Booking booking = getBookingById(bookingId);
 
         if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwnerId().equals(userId)) {
             throw new NoSuchElementException("Пользователь не является ни автором бронирования, ни владельцем вещи");
@@ -97,8 +92,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDto> getUserBookings(String state, Long userId, Integer from, Integer size) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + userId + " не найден"));
+        getUserById(userId);
 
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime now = LocalDateTime.now();
@@ -135,8 +129,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingResponseDto> getOwnerBookings(String state, Long ownerId, Integer from, Integer size) {
-        userRepository.findById(ownerId)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + ownerId + " не найден"));
+        getUserById(ownerId);
 
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime now = LocalDateTime.now();
@@ -145,22 +138,22 @@ public class BookingServiceImpl implements BookingService {
         try {
             switch (BookingState.valueOf(state)) {
                 case ALL:
-                    bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdOrderByStartDesc(ownerId, pageable);
                     break;
                 case CURRENT:
-                    bookings = bookingRepository.findByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, now, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, now, now, pageable);
                     break;
                 case PAST:
-                    bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, now, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdAndEndBeforeOrderByStartDesc(ownerId, now, pageable);
                     break;
                 case FUTURE:
-                    bookings = bookingRepository.findByItemOwnerIdAndStartAfterOrderByStartDesc(ownerId, now, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdAndStartAfterOrderByStartDesc(ownerId, now, pageable);
                     break;
                 case WAITING:
-                    bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
                     break;
                 case REJECTED:
-                    bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
+                    bookings = bookingRepository.findByItem_OwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown state: " + state);
@@ -169,5 +162,20 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Unknown state: " + state);
         }
         return BookingMapper.toResponseDto(bookings);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + userId + " не найден"));
+    }
+
+    private Item getItemById(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new NoSuchElementException("Вещь с ID " + itemId + " не найдена"));
+    }
+
+    private Booking getBookingById(Long bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + bookingId + " не найдено"));
     }
 }
