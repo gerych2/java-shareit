@@ -60,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto approveBooking(Long bookingId, Boolean approved, Long ownerId) {
-        Booking booking = getBookingById(bookingId);
+        Booking booking = findBookingById(bookingId);
 
         if (!booking.getItem().getOwnerId().equals(ownerId)) {
             throw new ForbiddenException("Только владелец может подтверждать бронирование");
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getBookingById(Long bookingId, Long userId) {
-        Booking booking = getBookingById(bookingId);
+        Booking booking = findBookingById(bookingId);
 
         if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwnerId().equals(userId)) {
             throw new NoSuchElementException("Пользователь не является ни автором бронирования, ни владельцем вещи");
@@ -174,7 +174,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NoSuchElementException("Вещь с ID " + itemId + " не найдена"));
     }
 
-    private Booking getBookingById(Long bookingId) {
+    private Booking findBookingById(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + bookingId + " не найдено"));
     }
