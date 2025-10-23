@@ -103,27 +103,31 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
 
-        switch (BookingState.valueOf(state)) {
-            case ALL:
-                bookings = bookingRepository.findByBookerIdOrderByStartDesc(userId, pageable);
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now, pageable);
-                break;
-            case PAST:
-                bookings = bookingRepository.findByBookerIdAndEndBeforeOrderByStartDesc(userId, now, pageable);
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findByBookerIdAndStartAfterOrderByStartDesc(userId, now, pageable);
-                break;
-            case WAITING:
-                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageable);
-                break;
-            case REJECTED:
-                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageable);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown state: " + state);
+        try {
+            switch (BookingState.valueOf(state)) {
+                case ALL:
+                    bookings = bookingRepository.findByBookerIdOrderByStartDesc(userId, pageable);
+                    break;
+                case CURRENT:
+                    bookings = bookingRepository.findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now, pageable);
+                    break;
+                case PAST:
+                    bookings = bookingRepository.findByBookerIdAndEndBeforeOrderByStartDesc(userId, now, pageable);
+                    break;
+                case FUTURE:
+                    bookings = bookingRepository.findByBookerIdAndStartAfterOrderByStartDesc(userId, now, pageable);
+                    break;
+                case WAITING:
+                    bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageable);
+                    break;
+                case REJECTED:
+                    bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageable);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown state: " + state);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown state: " + state);
         }
         return BookingMapper.toResponseDto(bookings);
     }
@@ -137,27 +141,31 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
 
-        switch (BookingState.valueOf(state)) {
-            case ALL:
-                bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId, pageable);
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, now, pageable);
-                break;
-            case PAST:
-                bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, now, pageable);
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findByItemOwnerIdAndStartAfterOrderByStartDesc(ownerId, now, pageable);
-                break;
-            case WAITING:
-                bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
-                break;
-            case REJECTED:
-                bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown state: " + state);
+        try {
+            switch (BookingState.valueOf(state)) {
+                case ALL:
+                    bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId, pageable);
+                    break;
+                case CURRENT:
+                    bookings = bookingRepository.findByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(ownerId, now, pageable);
+                    break;
+                case PAST:
+                    bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, now, pageable);
+                    break;
+                case FUTURE:
+                    bookings = bookingRepository.findByItemOwnerIdAndStartAfterOrderByStartDesc(ownerId, now, pageable);
+                    break;
+                case WAITING:
+                    bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.WAITING, pageable);
+                    break;
+                case REJECTED:
+                    bookings = bookingRepository.findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, BookingStatus.REJECTED, pageable);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown state: " + state);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown state: " + state);
         }
         return BookingMapper.toResponseDto(bookings);
     }
