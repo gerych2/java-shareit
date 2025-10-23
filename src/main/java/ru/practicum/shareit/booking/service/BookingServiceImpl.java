@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
 import ru.practicum.shareit.user.User;
@@ -66,7 +67,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + bookingId + " не найдено"));
 
         if (!booking.getItem().getOwnerId().equals(ownerId)) {
-            throw new NoSuchElementException("Только владелец может подтверждать бронирование");
+            throw new ForbiddenException("Только владелец может подтверждать бронирование");
         }
 
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
