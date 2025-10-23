@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,7 +18,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto createItem(@RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         return itemService.createItem(itemDto, ownerId);
     }
@@ -49,7 +48,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable Long itemId,
-                                 @Valid @RequestBody CommentCreateDto commentCreateDto,
+                                 @RequestBody CommentCreateDto commentCreateDto,
                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemService.addComment(itemId, commentCreateDto, userId);
     }

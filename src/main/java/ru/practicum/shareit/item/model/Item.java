@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "items")
@@ -18,15 +16,12 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Название вещи не может быть пустым")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank(message = "Описание вещи не может быть пустым")
     @Column(name = "description", nullable = false)
     private String description;
 
-    @NotNull(message = "Статус доступности вещи не может быть пустым")
     @Column(name = "available", nullable = false)
     private Boolean available;
 
