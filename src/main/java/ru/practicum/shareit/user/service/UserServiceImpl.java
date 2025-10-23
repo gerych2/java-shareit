@@ -29,10 +29,17 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь с ID " + userId + " не найден"));
 
-        if (userDto.getName() != null) {
+        if (userDto.getName() != null && !userDto.getName().isBlank()) {
             existingUser.setName(userDto.getName());
         }
-        if (userDto.getEmail() != null) {
+        if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
+            // Проверка на уникальность email, если он изменился
+            if (!userDto.getEmail().equals(existingUser.getEmail())) {
+                userRepository.findByEmail(userDto.getEmail())
+                        .ifPresent(u -> {
+                            throw new IllegalArgumentException("Пользователь с таким email уже существует");
+                        });
+            }
             existingUser.setEmail(userDto.getEmail());
         }
 
