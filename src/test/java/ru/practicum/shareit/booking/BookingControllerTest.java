@@ -48,9 +48,18 @@ class BookingControllerTest {
         responseDto.setId(1L);
         responseDto.setStart(createDto.getStart());
         responseDto.setEnd(createDto.getEnd());
-        responseDto.setStatus(BookingStatus.WAITING);
-        responseDto.setItem(new BookingDto.ItemDto(1L, "Дрель"));
-        responseDto.setBooker(new BookingDto.UserDto(1L, "John"));
+        responseDto.setStatus("WAITING");
+        ItemDto item = new ItemDto();
+        item.setId(1L);
+        item.setName("Дрель");
+        item.setDescription("Описание дрели");
+        item.setAvailable(true);
+        responseDto.setItem(item);
+        UserDto booker = new UserDto();
+        booker.setId(1L);
+        booker.setName("John");
+        booker.setEmail("john@example.com");
+        responseDto.setBooker(booker);
 
         when(bookingService.createBooking(any(BookingCreateDto.class), anyLong()))
             .thenReturn(responseDto);
@@ -87,9 +96,9 @@ class BookingControllerTest {
         // Given
         BookingResponseDto responseDto = new BookingResponseDto();
         responseDto.setId(1L);
-        responseDto.setStatus(BookingStatus.APPROVED);
+        responseDto.setStatus("APPROVED");
 
-        when(bookingService.approveBooking(anyLong(), anyLong(), anyBoolean()))
+        when(bookingService.approveBooking(anyLong(), anyBoolean(), anyLong()))
             .thenReturn(responseDto);
 
         // When & Then
@@ -105,9 +114,9 @@ class BookingControllerTest {
         // Given
         BookingResponseDto responseDto = new BookingResponseDto();
         responseDto.setId(1L);
-        responseDto.setStatus(BookingStatus.WAITING);
+        responseDto.setStatus("WAITING");
 
-        when(bookingService.getBooking(anyLong(), anyLong())).thenReturn(responseDto);
+        when(bookingService.getBookingById(anyLong(), anyLong())).thenReturn(responseDto);
 
         // When & Then
         mockMvc.perform(get("/bookings/1")
@@ -120,7 +129,7 @@ class BookingControllerTest {
     @Test
     void getBooking_shouldReturn404WhenBookingNotFound() throws Exception {
         // Given
-        when(bookingService.getBooking(anyLong(), anyLong()))
+        when(bookingService.getBookingById(anyLong(), anyLong()))
             .thenThrow(new NoSuchElementException("Бронирование не найдено"));
 
         // When & Then
@@ -134,9 +143,9 @@ class BookingControllerTest {
         // Given
         BookingResponseDto booking = new BookingResponseDto();
         booking.setId(1L);
-        booking.setStatus(BookingStatus.WAITING);
+        booking.setStatus("WAITING");
 
-        when(bookingService.getUserBookings(anyLong(), anyString()))
+        when(bookingService.getUserBookings(anyString(), anyLong(), anyInt(), anyInt()))
             .thenReturn(List.of(booking));
 
         // When & Then
@@ -151,7 +160,7 @@ class BookingControllerTest {
     @Test
     void getUserBookings_shouldReturn400WhenStateIsInvalid() throws Exception {
         // Given
-        when(bookingService.getUserBookings(anyLong(), anyString()))
+        when(bookingService.getUserBookings(anyString(), anyLong(), anyInt(), anyInt()))
             .thenThrow(new IllegalArgumentException("Unknown state: INVALID"));
 
         // When & Then
@@ -166,9 +175,9 @@ class BookingControllerTest {
         // Given
         BookingResponseDto booking = new BookingResponseDto();
         booking.setId(1L);
-        booking.setStatus(BookingStatus.WAITING);
+        booking.setStatus("WAITING");
 
-        when(bookingService.getOwnerBookings(anyLong(), anyString()))
+        when(bookingService.getOwnerBookings(anyString(), anyLong(), anyInt(), anyInt()))
             .thenReturn(List.of(booking));
 
         // When & Then

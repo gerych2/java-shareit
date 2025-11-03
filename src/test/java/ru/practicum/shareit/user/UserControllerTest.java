@@ -94,7 +94,7 @@ class UserControllerTest {
         UserDto updateDto = new UserDto(null, "John Updated", null);
         UserDto responseDto = new UserDto(1L, "John Updated", "john@test.com");
 
-        when(userService.updateUser(any(UserDto.class), anyLong())).thenReturn(responseDto);
+        when(userService.updateUser(anyLong(), any(UserDto.class))).thenReturn(responseDto);
 
         // When & Then
         mockMvc.perform(patch("/users/1")
@@ -109,7 +109,7 @@ class UserControllerTest {
         // Given
         UserDto userDto = new UserDto(1L, "John Doe", "john@test.com");
 
-        when(userService.getUser(anyLong())).thenReturn(userDto);
+        when(userService.getUserById(anyLong())).thenReturn(userDto);
 
         // When & Then
         mockMvc.perform(get("/users/1"))
@@ -122,7 +122,7 @@ class UserControllerTest {
     @Test
     void getUser_shouldReturn404WhenUserNotFound() throws Exception {
         // Given
-        when(userService.getUser(anyLong()))
+        when(userService.getUserById(anyLong()))
             .thenThrow(new NoSuchElementException("Пользователь не найден"));
 
         // When & Then

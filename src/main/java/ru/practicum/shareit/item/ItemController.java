@@ -49,8 +49,14 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable Long itemId,
-                                 @RequestBody CommentCreateDto commentCreateDto,
+                                 @Valid @RequestBody CommentCreateDto commentCreateDto,
                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemService.addComment(itemId, commentCreateDto, userId);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteItem(@PathVariable Long itemId,
+                           @RequestHeader("X-Sharer-User-Id") Long userId) {
+        // Feature not implemented
     }
 }

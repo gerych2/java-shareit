@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
@@ -21,7 +20,6 @@ import ru.practicum.shareit.user.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +92,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getUserBookings(String state, Long userId, Integer from, Integer size) {
         getUserById(userId);
 
+        if (size <= 0) {
+            throw new IllegalArgumentException("Размер страницы должен быть больше 0");
+        }
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
@@ -131,6 +132,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getOwnerBookings(String state, Long ownerId, Integer from, Integer size) {
         getUserById(ownerId);
 
+        if (size <= 0) {
+            throw new IllegalArgumentException("Размер страницы должен быть больше 0");
+        }
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;

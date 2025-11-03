@@ -72,9 +72,10 @@ class ItemRequestServiceIntegrationTest {
     }
 
     @Test
-    void getOwnRequests_shouldReturnUserRequests() {
+    void getOwnRequests_shouldReturnUserRequests() throws InterruptedException {
         // Given
         itemRequestService.createRequest(new ItemRequestCreateDto("Нужна дрель"), requester.getId());
+        Thread.sleep(10); // Небольшая задержка для различия в датах
         itemRequestService.createRequest(new ItemRequestCreateDto("Нужен молоток"), requester.getId());
 
         // When

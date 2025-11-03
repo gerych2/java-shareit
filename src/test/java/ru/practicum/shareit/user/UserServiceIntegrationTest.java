@@ -3,9 +3,9 @@ package ru.practicum.shareit.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -46,7 +46,7 @@ class UserServiceIntegrationTest {
         userService.createUser(userDto1);
 
         // When & Then
-        assertThrows(ConflictException.class, () -> 
+        assertThrows(DataIntegrityViolationException.class, () -> 
             userService.createUser(userDto2)
         );
     }
@@ -60,7 +60,7 @@ class UserServiceIntegrationTest {
         UserDto updateDto = new UserDto(null, "John Updated", null);
 
         // When
-        UserDto result = userService.updateUser(updateDto, created.getId());
+        UserDto result = userService.updateUser(created.getId(), updateDto);
 
         // Then
         assertEquals("John Updated", result.getName());
@@ -76,7 +76,7 @@ class UserServiceIntegrationTest {
         UserDto updateDto = new UserDto(null, null, "newemail@test.com");
 
         // When
-        UserDto result = userService.updateUser(updateDto, created.getId());
+        UserDto result = userService.updateUser(created.getId(), updateDto);
 
         // Then
         assertEquals("John Doe", result.getName()); // Не изменился
@@ -92,8 +92,8 @@ class UserServiceIntegrationTest {
         UserDto updateDto = new UserDto(null, null, "user1@test.com");
 
         // When & Then
-        assertThrows(ConflictException.class, () -> 
-            userService.updateUser(updateDto, user2.getId())
+        assertThrows(ru.practicum.shareit.exception.ConflictException.class, () -> 
+            userService.updateUser(user2.getId(), updateDto)
         );
     }
 
@@ -104,7 +104,7 @@ class UserServiceIntegrationTest {
         UserDto created = userService.createUser(userDto);
 
         // When
-        UserDto result = userService.getUser(created.getId());
+        UserDto result = userService.getUserById(created.getId());
 
         // Then
         assertEquals(created.getId(), result.getId());
@@ -119,7 +119,7 @@ class UserServiceIntegrationTest {
 
         // When & Then
         assertThrows(NoSuchElementException.class, () -> 
-            userService.getUser(nonExistentId)
+            userService.getUserById(nonExistentId)
         );
     }
 
@@ -147,7 +147,7 @@ class UserServiceIntegrationTest {
 
         // Then
         assertThrows(NoSuchElementException.class, () -> 
-            userService.getUser(created.getId())
+            userService.getUserById(created.getId())
         );
     }
 }

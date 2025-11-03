@@ -63,7 +63,7 @@ class BookingServiceIntegrationTest {
         // Then
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(BookingStatus.WAITING, result.getStatus());
+        assertEquals("WAITING", result.getStatus());
         assertEquals(item.getId(), result.getItem().getId());
         assertEquals(booker.getId(), result.getBooker().getId());
     }
@@ -94,10 +94,10 @@ class BookingServiceIntegrationTest {
         BookingResponseDto created = bookingService.createBooking(bookingDto, booker.getId());
 
         // When
-        BookingResponseDto result = bookingService.approveBooking(created.getId(), owner.getId(), true);
+        BookingResponseDto result = bookingService.approveBooking(created.getId(), true, owner.getId());
 
         // Then
-        assertEquals(BookingStatus.APPROVED, result.getStatus());
+        assertEquals("APPROVED", result.getStatus());
     }
 
     @Test
@@ -111,10 +111,10 @@ class BookingServiceIntegrationTest {
         BookingResponseDto created = bookingService.createBooking(bookingDto, booker.getId());
 
         // When
-        BookingResponseDto result = bookingService.approveBooking(created.getId(), owner.getId(), false);
+        BookingResponseDto result = bookingService.approveBooking(created.getId(), false, owner.getId());
 
         // Then
-        assertEquals(BookingStatus.REJECTED, result.getStatus());
+        assertEquals("REJECTED", result.getStatus());
     }
 
     @Test
@@ -128,7 +128,7 @@ class BookingServiceIntegrationTest {
         BookingResponseDto created = bookingService.createBooking(bookingDto, booker.getId());
 
         // When
-        BookingResponseDto result = bookingService.getBooking(created.getId(), owner.getId());
+        BookingResponseDto result = bookingService.getBookingById(created.getId(), owner.getId());
 
         // Then
         assertNotNull(result);
@@ -146,7 +146,7 @@ class BookingServiceIntegrationTest {
         BookingResponseDto created = bookingService.createBooking(bookingDto, booker.getId());
 
         // When
-        BookingResponseDto result = bookingService.getBooking(created.getId(), booker.getId());
+        BookingResponseDto result = bookingService.getBookingById(created.getId(), booker.getId());
 
         // Then
         assertNotNull(result);
@@ -162,7 +162,7 @@ class BookingServiceIntegrationTest {
         );
 
         // When
-        List<BookingResponseDto> result = bookingService.getUserBookings(booker.getId(), "ALL");
+        List<BookingResponseDto> result = bookingService.getUserBookings("ALL", booker.getId(), 0, 10);
 
         // Then
         assertEquals(1, result.size());
@@ -177,11 +177,11 @@ class BookingServiceIntegrationTest {
         );
 
         // When
-        List<BookingResponseDto> result = bookingService.getUserBookings(booker.getId(), "WAITING");
+        List<BookingResponseDto> result = bookingService.getUserBookings("WAITING", booker.getId(), 0, 10);
 
         // Then
         assertEquals(1, result.size());
-        assertEquals(BookingStatus.WAITING, result.get(0).getStatus());
+        assertEquals("WAITING", result.get(0).getStatus());
     }
 
     @Test
@@ -193,7 +193,7 @@ class BookingServiceIntegrationTest {
         );
 
         // When
-        List<BookingResponseDto> result = bookingService.getOwnerBookings(owner.getId(), "ALL");
+        List<BookingResponseDto> result = bookingService.getOwnerBookings("ALL", owner.getId(), 0, 10);
 
         // Then
         assertEquals(1, result.size());
@@ -208,7 +208,7 @@ class BookingServiceIntegrationTest {
         );
 
         // When
-        List<BookingResponseDto> result = bookingService.getOwnerBookings(owner.getId(), "FUTURE");
+        List<BookingResponseDto> result = bookingService.getOwnerBookings("FUTURE", owner.getId(), 0, 10);
 
         // Then
         assertEquals(1, result.size());

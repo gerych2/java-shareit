@@ -73,7 +73,7 @@ class ItemControllerTest {
         ItemDto updateDto = new ItemDto(null, "Дрель обновленная", null, null, null);
         ItemDto responseDto = new ItemDto(1L, "Дрель обновленная", "Мощная дрель", true, null);
 
-        when(itemService.updateItem(any(ItemDto.class), anyLong(), anyLong())).thenReturn(responseDto);
+        when(itemService.updateItem(anyLong(), any(ItemDto.class), anyLong())).thenReturn(responseDto);
 
         // When & Then
         mockMvc.perform(patch("/items/1")
@@ -93,7 +93,7 @@ class ItemControllerTest {
         itemDto.setDescription("Мощная дрель");
         itemDto.setAvailable(true);
 
-        when(itemService.getItem(anyLong(), anyLong())).thenReturn(itemDto);
+        when(itemService.getItemById(anyLong(), anyLong())).thenReturn(itemDto);
 
         // When & Then
         mockMvc.perform(get("/items/1")
@@ -106,7 +106,7 @@ class ItemControllerTest {
     @Test
     void getItem_shouldReturn404WhenItemNotFound() throws Exception {
         // Given
-        when(itemService.getItem(anyLong(), anyLong()))
+        when(itemService.getItemById(anyLong(), anyLong()))
             .thenThrow(new NoSuchElementException("Вещь не найдена"));
 
         // When & Then
@@ -126,7 +126,7 @@ class ItemControllerTest {
         item2.setId(2L);
         item2.setName("Молоток");
 
-        when(itemService.getUserItems(anyLong())).thenReturn(List.of(item1, item2));
+        when(itemService.getItemsByOwner(anyLong())).thenReturn(List.of(item1, item2));
 
         // When & Then
         mockMvc.perform(get("/items")
@@ -141,7 +141,7 @@ class ItemControllerTest {
     void searchItems_shouldReturn200AndListOfItems() throws Exception {
         // Given
         ItemDto item = new ItemDto(1L, "Дрель", "Мощная дрель", true, null);
-        when(itemService.searchItems(anyString(), anyLong())).thenReturn(List.of(item));
+        when(itemService.searchItems(anyString())).thenReturn(List.of(item));
 
         // When & Then
         mockMvc.perform(get("/items/search")
@@ -158,7 +158,7 @@ class ItemControllerTest {
         CommentCreateDto commentDto = new CommentCreateDto("Отличная вещь!");
         CommentDto responseDto = new CommentDto(1L, "Отличная вещь!", "John", LocalDateTime.now());
 
-        when(itemService.addComment(any(CommentCreateDto.class), anyLong(), anyLong()))
+        when(itemService.addComment(anyLong(), any(CommentCreateDto.class), anyLong()))
             .thenReturn(responseDto);
 
         // When & Then
