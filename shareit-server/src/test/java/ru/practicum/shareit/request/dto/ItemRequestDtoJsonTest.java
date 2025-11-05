@@ -33,7 +33,7 @@ class ItemRequestDtoJsonTest {
         // Then
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo("Нужна дрель");
-        assertThat(result).extractingJsonPathStringValue("$.createDate")
+        assertThat(result).extractingJsonPathStringValue("$.created")
             .isEqualTo(created.format(FORMATTER));
         assertThat(result).extractingJsonPathArrayValue("$.items").hasSize(1);
         assertThat(result).extractingJsonPathNumberValue("$.items[0].id").isEqualTo(1);
@@ -44,7 +44,7 @@ class ItemRequestDtoJsonTest {
     @Test
     void testDeserialize() throws Exception {
         // Given
-        String content = "{\"id\":1,\"description\":\"Нужна дрель\",\"createDate\":\"2024-01-01T10:00:00\"," +
+        String content = "{\"id\":1,\"description\":\"Нужна дрель\",\"created\":\"2024-01-01T10:00:00\"," +
                         "\"items\":[{\"id\":1,\"name\":\"Дрель\",\"ownerId\":2}]}";
 
         // When
@@ -53,7 +53,7 @@ class ItemRequestDtoJsonTest {
         // Then
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getDescription()).isEqualTo("Нужна дрель");
-        assertThat(result.getCreateDate()).isEqualTo(LocalDateTime.of(2024, 1, 1, 10, 0));
+        assertThat(result.getCreated()).isEqualTo(LocalDateTime.of(2024, 1, 1, 10, 0));
         assertThat(result.getItems()).hasSize(1);
         assertThat(result.getItems().get(0).getId()).isEqualTo(1L);
         assertThat(result.getItems().get(0).getName()).isEqualTo("Дрель");

@@ -55,7 +55,7 @@ class ItemRequestServiceIntegrationTest {
         assertNotNull(result);
         assertNotNull(result.getId());
         assertEquals("Нужна дрель", result.getDescription());
-        assertNotNull(result.getCreateDate());
+        assertNotNull(result.getCreated());
         assertTrue(result.getItems().isEmpty());
     }
 
