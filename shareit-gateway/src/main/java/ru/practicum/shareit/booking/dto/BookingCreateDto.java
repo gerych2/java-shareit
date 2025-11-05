@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 public class BookingCreateDto {
     @NotNull(message = "ID вещи обязателен")
     private Long itemId;
+    @NotNull(message = "Дата начала обязательна")
     private LocalDateTime start;
+    @NotNull(message = "Дата окончания обязательна")
     private LocalDateTime end;
 }
 
