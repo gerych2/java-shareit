@@ -22,10 +22,16 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
       
-      - name: Start Spring Boot Application
+      - name: Start ShareIt Server
         run: |
-          java -jar target/shareit-0.0.1-SNAPSHOT.jar &
-          echo $! > app.pid
+          java -jar shareit-server/target/shareit-server-0.0.1-SNAPSHOT.jar &
+          echo $! > server.pid
+          sleep 10
+      
+      - name: Start ShareIt Gateway
+        run: |
+          java -jar shareit-gateway/target/shareit-gateway-0.0.1-SNAPSHOT.jar &
+          echo $! > gateway.pid
           sleep 30
       
       - name: Wait for application to be ready
@@ -43,9 +49,12 @@ jobs:
       - name: Run Postman tests
         run: newman run sprint.json
       
-      - name: Stop application
+      - name: Stop applications
         if: always()
         run: |
-          if [ -f app.pid ]; then
-            kill $(cat app.pid) || true
+          if [ -f gateway.pid ]; then
+            kill $(cat gateway.pid) || true
+          fi
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
           fi
