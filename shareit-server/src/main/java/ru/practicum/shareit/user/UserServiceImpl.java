@@ -18,6 +18,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        // Проверка на уникальность email
+        userRepository.findByEmail(userDto.getEmail())
+                .ifPresent(u -> {
+                    throw new ConflictException("Пользователь с таким email уже существует");
+                });
         User user = UserMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return UserMapper.toDto(savedUser);
