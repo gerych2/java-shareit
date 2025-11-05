@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -40,6 +41,9 @@ public class BaseClient {
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(parseErrorResponse(e));
+        } catch (RestClientException e) {
+            // Пробрасываем дальше для обработки в ErrorHandler
+            throw e;
         }
         return prepareGatewayResponse(shareitServerResponse);
     }
@@ -61,6 +65,9 @@ public class BaseClient {
             shareitServerResponse = rest.exchange(path, HttpMethod.POST, requestEntity, Object.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(parseErrorResponse(e));
+        } catch (RestClientException e) {
+            // Пробрасываем дальше для обработки в ErrorHandler
+            throw e;
         }
         return prepareGatewayResponse(shareitServerResponse);
     }
@@ -86,6 +93,9 @@ public class BaseClient {
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(parseErrorResponse(e));
+        } catch (RestClientException e) {
+            // Пробрасываем дальше для обработки в ErrorHandler
+            throw e;
         }
         return prepareGatewayResponse(shareitServerResponse);
     }
@@ -102,6 +112,9 @@ public class BaseClient {
             shareitServerResponse = rest.exchange(path, HttpMethod.DELETE, requestEntity, Object.class);
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(parseErrorResponse(e));
+        } catch (RestClientException e) {
+            // Пробрасываем дальше для обработки в ErrorHandler
+            throw e;
         }
         return prepareGatewayResponse(shareitServerResponse);
     }
