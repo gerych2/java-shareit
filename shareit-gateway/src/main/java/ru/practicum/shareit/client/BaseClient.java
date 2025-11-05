@@ -79,6 +79,7 @@ public class BaseClient {
     protected <T> ResponseEntity<Object> patch(String path, Long userId, T body, @Nullable Map<String, Object> parameters) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(java.util.Collections.singletonList(MediaType.APPLICATION_JSON));
         if (userId != null) {
             headers.set("X-Sharer-User-Id", String.valueOf(userId));
         }

@@ -12,41 +12,40 @@ import java.util.Map;
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
+    private final String baseUrl;
 
     public ItemClient(@Value("${shareit.server.url}") String serverUrl, RestTemplate rest) {
-        super(
-                rest == null ? new RestTemplate(new HttpComponentsClientHttpRequestFactory()) : rest
-        );
-        this.rest.setUriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
+        super(rest);
+        this.baseUrl = serverUrl + API_PREFIX;
     }
 
     public ResponseEntity<Object> createItem(Object itemDto, Long ownerId) {
-        return post("", ownerId, itemDto);
+        return post(baseUrl, ownerId, itemDto);
     }
 
     public ResponseEntity<Object> updateItem(Long itemId, Object itemDto, Long ownerId) {
-        return patch("/" + itemId, ownerId, itemDto);
+        return patch(baseUrl + "/" + itemId, ownerId, itemDto);
     }
 
     public ResponseEntity<Object> getItemById(Long itemId, Long userId) {
-        return get("/" + itemId, userId);
+        return get(baseUrl + "/" + itemId, userId);
     }
 
     public ResponseEntity<Object> getItemsByOwner(Long ownerId) {
-        return get("", ownerId);
+        return get(baseUrl, ownerId);
     }
 
     public ResponseEntity<Object> searchItems(String text) {
         Map<String, Object> parameters = Map.of("text", text);
-        return get("/search?text={text}", null, parameters);
+        return get(baseUrl + "/search?text={text}", null, parameters);
     }
 
     public ResponseEntity<Object> addComment(Long itemId, Object commentCreateDto, Long userId) {
-        return post("/" + itemId + "/comment", userId, commentCreateDto);
+        return post(baseUrl + "/" + itemId + "/comment", userId, commentCreateDto);
     }
 
     public ResponseEntity<Object> deleteItem(Long itemId, Long userId) {
-        return delete("/" + itemId, userId);
+        return delete(baseUrl + "/" + itemId, userId);
     }
 }
 

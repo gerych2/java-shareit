@@ -10,7 +10,7 @@ public class ItemRequestMapper {
     public static ItemRequest toEntity(ItemRequestCreateDto dto) {
         ItemRequest request = new ItemRequest();
         request.setDescription(dto.getDescription());
-        request.setCreateDate(LocalDateTime.now());
+        request.setCreated(LocalDateTime.now());
         return request;
     }
 
@@ -18,7 +18,7 @@ public class ItemRequestMapper {
         return new ItemRequestDto(
                 request.getId(),
                 request.getDescription(),
-                request.getCreateDate(),
+                request.getCreated(),
                 null // items будут установлены отдельно через ItemMapper.toShortDto
         );
     }

@@ -49,7 +49,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         log.info("Получение списка запросов пользователя с id={}", userId);
         
         getUserById(userId);
-        List<ItemRequest> requests = requestRepository.findByRequesterIdOrderByCreateDateDesc(userId);
+        List<ItemRequest> requests = requestRepository.findByRequesterIdOrderByCreatedDesc(userId);
         return enrichRequestsWithItems(requests);
     }
 

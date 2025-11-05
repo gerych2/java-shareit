@@ -10,28 +10,27 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 @Service
 public class ItemRequestClient extends BaseClient {
     private static final String API_PREFIX = "/requests";
+    private final String baseUrl;
 
     public ItemRequestClient(@Value("${shareit.server.url}") String serverUrl, RestTemplate rest) {
-        super(
-                rest == null ? new RestTemplate(new HttpComponentsClientHttpRequestFactory()) : rest
-        );
-        this.rest.setUriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
+        super(rest);
+        this.baseUrl = serverUrl + API_PREFIX;
     }
 
     public ResponseEntity<Object> createRequest(Object itemRequestCreateDto, Long userId) {
-        return post("", userId, itemRequestCreateDto);
+        return post(baseUrl, userId, itemRequestCreateDto);
     }
 
     public ResponseEntity<Object> getOwnRequests(Long userId) {
-        return get("", userId);
+        return get(baseUrl, userId);
     }
 
     public ResponseEntity<Object> getAllRequests(Long userId) {
-        return get("/all", userId);
+        return get(baseUrl + "/all", userId);
     }
 
     public ResponseEntity<Object> getRequestById(Long requestId, Long userId) {
-        return get("/" + requestId, userId);
+        return get(baseUrl + "/" + requestId, userId);
     }
 }
 

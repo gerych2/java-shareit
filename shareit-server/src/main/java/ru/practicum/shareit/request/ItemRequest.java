@@ -26,5 +26,5 @@ public class ItemRequest {
     private User requester;
 
     @Column(name = "created", nullable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime created;
 }
