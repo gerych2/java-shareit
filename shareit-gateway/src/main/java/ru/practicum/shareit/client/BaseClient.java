@@ -137,12 +137,21 @@ public class BaseClient {
         try {
             String responseBody = e.getResponseBodyAsString();
             if (responseBody != null && !responseBody.isEmpty()) {
-                return objectMapper.readValue(responseBody, Object.class);
+                try {
+                    return objectMapper.readValue(responseBody, Object.class);
+                } catch (Exception jsonException) {
+                    // Если не удалось распарсить JSON, возвращаем Map с ошибкой
+                    Map<String, String> errorMap = new java.util.HashMap<>();
+                    errorMap.put("error", responseBody);
+                    return errorMap;
+                }
             }
         } catch (Exception ignored) {
-            // Если не удалось распарсить JSON, возвращаем как строку
+            // Если не удалось получить тело ответа
         }
-        return e.getResponseBodyAsString();
+        Map<String, String> errorMap = new java.util.HashMap<>();
+        errorMap.put("error", "Ошибка сервера");
+        return errorMap;
     }
 }
 

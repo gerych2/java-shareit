@@ -12,6 +12,9 @@ public class UserMapper {
     }
 
     public static User toUser(UserDto userDto) {
+        if (userDto == null) {
+            throw new IllegalArgumentException("UserDto не может быть null");
+        }
         User user = new User();
         // id не устанавливаем при создании нового пользователя
         if (userDto.getId() != null) {

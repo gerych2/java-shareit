@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -46,7 +45,7 @@ class UserServiceIntegrationTest {
         userService.createUser(userDto1);
 
         // When & Then
-        assertThrows(DataIntegrityViolationException.class, () -> 
+        assertThrows(ru.practicum.shareit.exception.ConflictException.class, () -> 
             userService.createUser(userDto2)
         );
     }

@@ -31,7 +31,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, String>> handleConflictException(ConflictException e) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", e.getMessage());
+        String message = e.getMessage();
+        error.put("error", message != null ? message : "Конфликт данных");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 

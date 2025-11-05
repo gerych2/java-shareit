@@ -22,7 +22,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateUser(Long userId, Object userDto) {
-        return patch("/" + userId, null, userDto);
+        return patch("/" + userId, userId, userDto);
     }
 
     public ResponseEntity<Object> getUserById(Long userId) {

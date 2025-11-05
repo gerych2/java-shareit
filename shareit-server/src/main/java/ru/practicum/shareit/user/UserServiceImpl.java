@@ -18,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email не может быть пустым");
+        }
         // Проверка на уникальность email
         userRepository.findByEmail(userDto.getEmail())
                 .ifPresent(u -> {
